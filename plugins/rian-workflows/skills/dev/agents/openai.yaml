@@ -1,0 +1,4 @@
+interface:
+  display_name: "DEV"
+  short_description: "Implement one Rian sprint task"
+  default_prompt: "Use $dev to implement the next Rian sprint task with project-appropriate tests and verification."

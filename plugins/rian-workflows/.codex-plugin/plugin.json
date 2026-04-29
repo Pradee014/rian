@@ -1,0 +1,39 @@
+{
+  "name": "rian-workflows",
+  "version": "0.2.0",
+  "description": "Rian-specific sprint planning, implementation, and walkthrough workflows.",
+  "author": {
+    "name": "Pradeep",
+    "email": "pradeep@example.com",
+    "url": "https://github.com/pradeep"
+  },
+  "homepage": "https://github.com/pradeep",
+  "repository": "https://github.com/pradeep",
+  "license": "MIT",
+  "keywords": [
+    "rian",
+    "voice",
+    "sprint-planning",
+    "implementation",
+    "walkthrough"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Rian Workflows",
+    "shortDescription": "Plan, build, and document Rian sprints",
+    "longDescription": "Project-specific workflows for planning Rian sprints, implementing one sprint task at a time, and generating walkthrough documents for the voice-first communication training POC.",
+    "developerName": "Pradeep",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/pradeep",
+    "privacyPolicyURL": "https://example.com/privacy",
+    "termsOfServiceURL": "https://example.com/terms",
+    "defaultPrompt": [
+      "Use $prd, $dev, or $walkthrough for the next Rian sprint task."
+    ],
+    "brandColor": "#0F766E"
+  }
+}

@@ -1,0 +1,410 @@
+:root {
+  color-scheme: light;
+  --background: #f2efe7;
+  --foreground: #171716;
+  --muted: #666a63;
+  --panel: #fffdf6;
+  --panel-soft: #f8f5ec;
+  --line: #d8d1bf;
+  --line-strong: #b7ad95;
+  --ria: #0f766e;
+  --ian: #334155;
+  --danger: #9f1239;
+  --shadow: 0 24px 80px rgba(23, 23, 22, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background:
+    linear-gradient(135deg, rgba(15, 118, 110, 0.16), transparent 32%),
+    linear-gradient(315deg, rgba(51, 65, 85, 0.13), transparent 30%),
+    radial-gradient(circle at 50% 0%, rgba(255, 253, 246, 0.86), transparent 42%),
+    var(--background);
+  color: var(--foreground);
+  font-family:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled,
+textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.voice-room {
+  width: min(1180px, 100%);
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: clamp(18px, 4vw, 40px);
+}
+
+.control-panel,
+.room-panel,
+.persona-card,
+.utterance-form,
+.recording-panel,
+.audio-preview {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--panel) 94%, transparent);
+  box-shadow: var(--shadow);
+}
+
+.control-panel {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 20px;
+  padding: 22px;
+}
+
+.eyebrow {
+  margin: 0 0 8px;
+  color: var(--ria);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+h1,
+h2 {
+  margin: 0;
+  letter-spacing: 0;
+}
+
+h1 {
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  font-size: clamp(3rem, 7vw, 5.75rem);
+  line-height: 0.9;
+}
+
+h2 {
+  font-size: 1.15rem;
+}
+
+.session-meta,
+.mode-row,
+.action-row,
+.persona-card-header,
+.panel-heading,
+.utterance-row {
+  display: flex;
+  align-items: center;
+}
+
+.session-meta {
+  gap: 10px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--line-strong);
+}
+
+.status-active {
+  background: var(--ria);
+  box-shadow: 0 0 0 6px rgba(15, 118, 110, 0.12);
+}
+
+.status-ended {
+  background: var(--danger);
+}
+
+.mode-row,
+.action-row {
+  gap: 8px;
+}
+
+.mode-button,
+.primary-action,
+.secondary-action {
+  min-height: 42px;
+  border-radius: 8px;
+  border: 1px solid var(--line-strong);
+  padding: 0 16px;
+  font-weight: 800;
+}
+
+.mode-button,
+.secondary-action {
+  background: var(--panel-soft);
+  color: var(--foreground);
+}
+
+.mode-button.active {
+  border-color: var(--ria);
+  color: var(--ria);
+}
+
+.primary-action {
+  border-color: var(--ria);
+  background: var(--ria);
+  color: white;
+}
+
+.room-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.room-main {
+  display: grid;
+  gap: 20px;
+}
+
+.persona-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.persona-card {
+  padding: 20px;
+}
+
+.persona-card.active {
+  border-color: var(--ria);
+  box-shadow:
+    inset 0 0 0 1px rgba(15, 118, 110, 0.22),
+    var(--shadow);
+}
+
+.persona-card-header {
+  justify-content: space-between;
+  gap: 14px;
+}
+
+.persona-card-header span,
+.panel-heading span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.persona-card p {
+  margin: 14px 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.persona-card ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.persona-card li {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 10px;
+  background: var(--panel-soft);
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
+.utterance-form {
+  padding: 20px;
+}
+
+.recording-panel,
+.audio-preview {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 20px;
+}
+
+.recording-panel h2 {
+  margin-bottom: 8px;
+}
+
+.recorder-status,
+.audio-preview p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.recording-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.audio-preview audio {
+  width: min(100%, 320px);
+}
+
+.utterance-form label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: 800;
+}
+
+.utterance-row {
+  align-items: stretch;
+  gap: 12px;
+}
+
+textarea {
+  width: 100%;
+  resize: vertical;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  background: white;
+  color: var(--foreground);
+  padding: 14px;
+  line-height: 1.5;
+}
+
+.utterance-row .primary-action {
+  min-width: 104px;
+}
+
+.room-panel {
+  padding: 20px;
+}
+
+.panel-heading {
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.transcript-list,
+.trace-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.turn,
+.trace-list li {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-soft);
+  padding: 14px;
+}
+
+.turn span,
+.trace-list span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.turn p,
+.trace-list p,
+.empty-state {
+  margin: 0;
+  color: var(--foreground);
+  line-height: 1.55;
+}
+
+.turn-user {
+  background: white;
+}
+
+.turn-system {
+  border-color: rgba(15, 118, 110, 0.35);
+}
+
+.trace-panel {
+  align-self: start;
+  position: sticky;
+  top: 20px;
+}
+
+.trace-list li {
+  box-shadow: none;
+}
+
+.empty-state {
+  color: var(--muted);
+}
+
+@media (max-width: 900px) {
+  .control-panel,
+  .room-grid,
+  .persona-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .control-panel {
+    align-items: stretch;
+  }
+
+  .session-meta,
+  .mode-row,
+  .action-row {
+    justify-content: space-between;
+  }
+
+  .trace-panel {
+    position: static;
+  }
+}
+
+@media (max-width: 560px) {
+  .voice-room {
+    padding: 14px;
+  }
+
+  .control-panel,
+  .room-panel,
+  .persona-card,
+  .utterance-form,
+  .recording-panel,
+  .audio-preview {
+    padding: 16px;
+  }
+
+  .utterance-row,
+  .recording-panel,
+  .audio-preview {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .mode-row,
+  .action-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}

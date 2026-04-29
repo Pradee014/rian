@@ -1,0 +1,4 @@
+interface:
+  display_name: "Walkthrough"
+  short_description: "Write a Rian sprint walkthrough"
+  default_prompt: "Use $walkthrough to generate the latest Rian sprint walkthrough."

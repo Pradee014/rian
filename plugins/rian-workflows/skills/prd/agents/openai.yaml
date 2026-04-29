@@ -1,0 +1,4 @@
+interface:
+  display_name: "PRD"
+  short_description: "Plan the next Rian sprint"
+  default_prompt: "Use $prd to create the next Rian sprint PRD and TASKS files."
