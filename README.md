@@ -31,10 +31,19 @@ Sprint v3 adds the first LiveKit room scaffold:
 - `@livekit/components-react` room connection surface
 - xAI realtime env placeholders with model selection left optional for LiveKit plugin defaults
 
+Sprint v4 adds the first server-side realtime voice worker:
+
+- LiveKit Agents worker entrypoint
+- xAI realtime model wiring through `@livekit/agents-plugin-xai`
+- Rian-specific agent instructions
+- `.env.local` loading for the worker process
+- no-network tests for agent config and worker construction helpers
+
 Real microphone capture, LiveKit rooms, STT, LLM calls, TTS playback, Supabase storage,
 and post-call critique generation were deferred in v1. In v2, microphone capture is local
 only; cloud providers and durable storage are still deferred. In v3, the browser can join
-a LiveKit room, but the server-side xAI voice agent worker is still deferred.
+a LiveKit room. In v4, a local worker can join through LiveKit Agents, but persona
+handoff, durable transcripts, and post-call critique are still deferred.
 
 ## Run Locally
 
@@ -52,6 +61,37 @@ with the default watcher:
 WATCHPACK_POLLING=true next dev --webpack
 ```
 
+## Run The Voice Worker
+
+The realtime worker is a separate Node process from the Next.js app. Run the web app in
+one terminal:
+
+```bash
+npm run dev
+```
+
+Run the LiveKit/xAI worker in a second terminal:
+
+```bash
+npm run agent:dev
+```
+
+For a focused local smoke test against a known room, use LiveKit Agents' `connect`
+command. The room name should match the room shown in the browser LiveKit panel:
+
+```bash
+npm run agent:connect -- --room rian-room
+```
+
+For a production-style worker process:
+
+```bash
+npm run agent:start
+```
+
+The worker loads `.env.local` first, then `.env`. Do not prefix these commands with
+secret values in the shell, because that can leak credentials into terminal history.
+
 ## Checks
 
 ```bash
@@ -63,20 +103,20 @@ npm audit
 
 ## Environment
 
-Create `.env.local` from `.env.example`. For the v3 LiveKit room scaffold, these values
-are required:
+Create `.env.local` from `.env.example`. For the browser room and agent worker, these
+values are required:
 
 ```bash
 LIVEKIT_URL=
 LIVEKIT_API_KEY=
 LIVEKIT_API_SECRET=
 NEXT_PUBLIC_LIVEKIT_URL=
+XAI_API_KEY=
 ```
 
-For the next xAI realtime worker sprint, add:
+Voice config is optional but recommended:
 
 ```bash
-XAI_API_KEY=
 XAI_RIA_VOICE=ara
 XAI_IAN_VOICE=rex
 ```
@@ -92,6 +132,7 @@ src/components/          Voice room UI surfaces
 src/lib/rian/            Rian domain types, personas, routing, session state
 src/lib/providers/       Swappable provider interfaces and v1 mock adapters
 src/lib/livekit/         LiveKit env and token request helpers
+src/agent/               LiveKit Agents worker, xAI realtime config, prompt tests
 sprints/v1/              Sprint plan and task checklist
 ```
 
@@ -109,18 +150,30 @@ The browser mic flow is local: start a session, click Record, grant microphone a
 click Stop, preview the captured audio, and let the app send the audio id through mock
 STT. No audio leaves the browser in v2.
 
-The LiveKit flow is room-only in v3: connect to a LiveKit room, then keep using the local
-mock practice UI until the server-side agent worker is implemented.
+The LiveKit flow now has two pieces: the browser connects to a LiveKit room, and the
+server-side worker can join the room as `rian-agent`. The local mock practice UI still
+exists so frontend development does not require provider calls.
+
+## Current Worker Limitations
+
+- Ria is the initial xAI voice used by the worker; dynamic Ria/Ian switching is planned
+  for the next routing sprint.
+- The worker uses LiveKit/xAI realtime behavior for turn detection; barge-in tuning is
+  not customized yet.
+- Transcripts, audio, trace events, and post-call critique are not persisted yet.
+- Supabase storage is still planned but not wired into the live voice path.
+- `npm audit` currently reports a no-fix moderate `uuid` advisory through
+  `@livekit/agents`; this repo does not call the affected UUID APIs directly.
 
 ## Next Provider Wiring
 
 The next implementation sprint should replace one mock boundary at a time:
 
-1. Add a LiveKit Agent worker that joins the room.
-2. Add the LiveKit xAI realtime plugin with default model selection.
-3. Map Ria/Ian voice choices through `XAI_RIA_VOICE` and `XAI_IAN_VOICE`.
-4. Preserve one-active-speaker routing and trace events around agent decisions.
-5. Persist sessions, transcripts, trace events, and later audio through Supabase.
+1. Add live Ria/Ian routing inside the worker while preserving one active speaker.
+2. Emit trace events for selected persona, router reason, model output, and latency.
+3. Persist sessions, transcripts, trace events, and later audio through Supabase.
+4. Generate post-call critique from the saved transcript.
+5. Add deletion paths for sessions, audio, transcripts, reports, and future memories.
 
 Keep Rian's core rules intact while wiring providers: one active AI speaker by default,
 visible traceability, no hidden memory, and deletion paths for stored personal data.
