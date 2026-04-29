@@ -4,15 +4,13 @@ import { FormEvent, useEffect, useReducer, useRef, useState } from "react";
 import { AudioPreview } from "@/components/audio-preview";
 import { RecordingControls } from "@/components/recording-controls";
 import { mockLlm } from "@/lib/providers/mock-llm";
-import { mockTts } from "@/lib/providers/mock-tts";
 import { mockStt } from "@/lib/providers/mock-stt";
-import { routePersona } from "@/lib/rian/router";
+import { mockTts } from "@/lib/providers/mock-tts";
+import { completeConversationTurn } from "@/lib/rian/conversation-turn";
 import {
   appendTrace,
-  appendTurn,
   createSession,
   endSession,
-  setActivePersona,
 } from "@/lib/rian/session";
 import type { PracticeMode, RianSession } from "@/lib/rian/types";
 import {
@@ -62,37 +60,6 @@ export function VoiceRoom() {
     setSession((current) => (current ? endSession(current) : current));
   }
 
-  async function completePracticeTurn(baseSession: RianSession, userText: string) {
-    const decision = routePersona({ mode: baseSession.mode, userText });
-    let next = appendTurn(baseSession, { speaker: "user", text: userText });
-    next = appendTrace(next, "user_turn", "User mock utterance recorded.");
-    next = setActivePersona(next, decision.primaryPersonaId);
-    next = appendTrace(next, "router_decision", decision.reason, {
-      primaryPersonaId: decision.primaryPersonaId,
-      secondaryPersonaId: decision.secondaryPersonaId ?? null,
-    });
-
-    const response = await mockLlm.respond({
-      userText,
-      decision,
-      transcript: next.transcript,
-    });
-    next = appendTrace(next, response.trace.type, response.trace.message, response.trace.metadata);
-    next = appendTurn(next, {
-      speaker: "system",
-      personaId: response.data.personaId,
-      text: response.data.text,
-    });
-
-    const audio = await mockTts.synthesize({
-      personaId: response.data.personaId,
-      text: response.data.text,
-    });
-    next = appendTrace(next, audio.trace.type, audio.trace.message, audio.trace.metadata);
-
-    setSession(next);
-  }
-
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
@@ -105,7 +72,12 @@ export function VoiceRoom() {
     setIsResponding(true);
 
     try {
-      await completePracticeTurn(session, userText);
+      const next = await completeConversationTurn(
+        session,
+        { type: "text", userText },
+        { llm: mockLlm, tts: mockTts },
+      );
+      setSession(next);
     } finally {
       setIsResponding(false);
     }
@@ -155,10 +127,12 @@ export function VoiceRoom() {
         size: recording.preview.size,
         durationMs: recording.preview.durationMs ?? null,
       });
-      const transcript = await mockStt.transcribe({ audioId: recording.preview.id });
-      next = appendTrace(next, transcript.trace.type, transcript.trace.message, transcript.trace.metadata);
-
-      await completePracticeTurn(next, transcript.data.text);
+      const completed = await completeConversationTurn(
+        next,
+        { type: "audio", audioId: recording.preview.id },
+        { stt: mockStt, llm: mockLlm, tts: mockTts },
+      );
+      setSession(completed);
     } catch (error) {
       const message = error instanceof Error ? error.message : "Could not stop recording.";
       dispatchRecorder({ type: "permission_denied", error: message });
