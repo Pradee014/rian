@@ -9,6 +9,10 @@
     "test": "vitest run --passWithNoTests"
   },
   "dependencies": {
+    "@livekit/components-react": "^2.9.20",
+    "@livekit/components-styles": "^1.2.0",
+    "livekit-client": "^2.18.7",
+    "livekit-server-sdk": "^2.15.2",
     "next": "latest",
     "react": "latest",
     "react-dom": "latest"

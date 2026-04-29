@@ -63,7 +63,8 @@ textarea:disabled {
 .persona-card,
 .utterance-form,
 .recording-panel,
-.audio-preview {
+.audio-preview,
+.livekit-panel {
   border: 1px solid var(--line);
   border-radius: 8px;
   background: color-mix(in srgb, var(--panel) 94%, transparent);
@@ -266,6 +267,56 @@ h2 {
   width: min(100%, 320px);
 }
 
+.livekit-panel {
+  padding: 20px;
+}
+
+.livekit-heading {
+  margin-bottom: 16px;
+}
+
+.livekit-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.livekit-form label {
+  display: grid;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.livekit-form input {
+  min-height: 42px;
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 0 12px;
+  color: var(--foreground);
+  font-weight: 600;
+  text-transform: none;
+}
+
+.livekit-actions {
+  justify-content: flex-start;
+  margin-top: 14px;
+}
+
+.livekit-error,
+.livekit-room-meta {
+  margin: 12px 0 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.livekit-error {
+  color: var(--danger);
+  font-weight: 700;
+}
+
 .utterance-form label {
   display: block;
   margin-bottom: 10px;
@@ -391,7 +442,8 @@ textarea {
   .persona-card,
   .utterance-form,
   .recording-panel,
-  .audio-preview {
+  .audio-preview,
+  .livekit-panel {
     padding: 16px;
   }
 
@@ -403,7 +455,8 @@ textarea {
   }
 
   .mode-row,
-  .action-row {
+  .action-row,
+  .livekit-form {
     display: grid;
     grid-template-columns: 1fr 1fr;
   }

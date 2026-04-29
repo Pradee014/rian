@@ -24,9 +24,17 @@ Sprint v2 adds the first browser microphone capture surface:
 - local audio preview through a browser object URL
 - recorded audio routed through mock STT, persona routing, mock LLM, mock TTS, transcript, and traces
 
+Sprint v3 adds the first LiveKit room scaffold:
+
+- server-side LiveKit token generation through `POST /api/livekit-token`
+- browser LiveKit room connection controls
+- `@livekit/components-react` room connection surface
+- xAI realtime env placeholders with model selection left optional for LiveKit plugin defaults
+
 Real microphone capture, LiveKit rooms, STT, LLM calls, TTS playback, Supabase storage,
 and post-call critique generation were deferred in v1. In v2, microphone capture is local
-only; cloud providers and durable storage are still deferred.
+only; cloud providers and durable storage are still deferred. In v3, the browser can join
+a LiveKit room, but the server-side xAI voice agent worker is still deferred.
 
 ## Run Locally
 
@@ -53,6 +61,29 @@ npm run build
 npm audit
 ```
 
+## Environment
+
+Create `.env.local` from `.env.example`. For the v3 LiveKit room scaffold, these values
+are required:
+
+```bash
+LIVEKIT_URL=
+LIVEKIT_API_KEY=
+LIVEKIT_API_SECRET=
+NEXT_PUBLIC_LIVEKIT_URL=
+```
+
+For the next xAI realtime worker sprint, add:
+
+```bash
+XAI_API_KEY=
+XAI_RIA_VOICE=ara
+XAI_IAN_VOICE=rex
+```
+
+`XAI_REALTIME_MODEL` should stay blank for now so the LiveKit xAI plugin can use its
+default model.
+
 ## Project Structure
 
 ```text
@@ -60,6 +91,7 @@ src/app/                 Next.js app entry and global styling
 src/components/          Voice room UI surfaces
 src/lib/rian/            Rian domain types, personas, routing, session state
 src/lib/providers/       Swappable provider interfaces and v1 mock adapters
+src/lib/livekit/         LiveKit env and token request helpers
 sprints/v1/              Sprint plan and task checklist
 ```
 
@@ -77,14 +109,17 @@ The browser mic flow is local: start a session, click Record, grant microphone a
 click Stop, preview the captured audio, and let the app send the audio id through mock
 STT. No audio leaves the browser in v2.
 
+The LiveKit flow is room-only in v3: connect to a LiveKit room, then keep using the local
+mock practice UI until the server-side agent worker is implemented.
+
 ## Next Provider Wiring
 
 The next implementation sprint should replace one mock boundary at a time:
 
-1. Add LiveKit room creation and browser microphone capture behind the voice runtime adapter.
-2. Add a real STT adapter while preserving the transcript shape.
-3. Add a live LLM adapter behind the current routing decision contract.
-4. Add a TTS adapter with selected Ria/Ian voices and first-audio latency tracing.
+1. Add a LiveKit Agent worker that joins the room.
+2. Add the LiveKit xAI realtime plugin with default model selection.
+3. Map Ria/Ian voice choices through `XAI_RIA_VOICE` and `XAI_IAN_VOICE`.
+4. Preserve one-active-speaker routing and trace events around agent decisions.
 5. Persist sessions, transcripts, trace events, and later audio through Supabase.
 
 Keep Rian's core rules intact while wiring providers: one active AI speaker by default,

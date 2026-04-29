@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useReducer, useRef, useState } from "react";
 import { AudioPreview } from "@/components/audio-preview";
+import { LiveKitConnectPanel } from "@/components/livekit-connect-panel";
 import { RecordingControls } from "@/components/recording-controls";
 import { mockLlm } from "@/lib/providers/mock-llm";
 import { mockStt } from "@/lib/providers/mock-stt";
@@ -154,6 +155,8 @@ export function VoiceRoom() {
 
       <div className="room-grid">
         <div className="room-main">
+          <LiveKitConnectPanel />
+
           <PersonaCards activePersonaId={activePersonaId} />
 
           <RecordingControls
