@@ -1,7 +1,11 @@
 "use client";
 
-import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react";
+import { ControlBar, LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react";
 import { useState } from "react";
+import {
+  getLiveConversationGuidance,
+  makeAgentConnectCommand,
+} from "@/lib/livekit/live-conversation";
 
 interface LiveKitTokenResponse {
   token: string;
@@ -61,15 +65,28 @@ export function LiveKitConnectPanel() {
     setStatus("idle");
   }
 
+  const workerCommand = makeAgentConnectCommand(roomName);
+  const guidance = getLiveConversationGuidance(status, tokenResponse?.roomName ?? roomName);
+
   return (
-    <section className="livekit-panel" aria-label="LiveKit room connection">
+    <section className="livekit-panel live-conversation-panel" aria-label="LiveKit room connection">
       <div className="panel-heading livekit-heading">
         <div>
-          <p className="eyebrow">LiveKit</p>
-          <h2>{status === "connected" ? "Room connected" : "Realtime room"}</h2>
+          <p className="eyebrow">Live conversation</p>
+          <h2>{status === "connected" ? "Rian room is live" : "Start a real voice room"}</h2>
         </div>
-        <span>{status}</span>
+        <span className={`live-status live-status-${status}`}>{status}</span>
       </div>
+
+      <p className="livekit-guidance" data-testid="livekit-guidance">
+        {guidance}
+      </p>
+
+      <ol className="livekit-steps" aria-label="Live conversation steps">
+        <li>Join the browser room.</li>
+        <li>Run the worker command in a second terminal.</li>
+        <li>Use the mic controls below and speak to Rian.</li>
+      </ol>
 
       <div className="livekit-form">
         <label>
@@ -94,6 +111,14 @@ export function LiveKitConnectPanel() {
 
       {error ? <p className="livekit-error">{error}</p> : null}
 
+      <div className="worker-command-card">
+        <div>
+          <p className="eyebrow">Worker command</p>
+          <code data-testid="agent-connect-command">{workerCommand}</code>
+        </div>
+        <p>Keep this running while you talk. Stop it with Ctrl+C when the call ends.</p>
+      </div>
+
       <div className="action-row livekit-actions">
         <button
           className="primary-action"
@@ -102,7 +127,7 @@ export function LiveKitConnectPanel() {
           onClick={handleConnect}
           type="button"
         >
-          Connect
+          Join browser room
         </button>
         <button
           className="secondary-action"
@@ -111,7 +136,7 @@ export function LiveKitConnectPanel() {
           onClick={handleDisconnect}
           type="button"
         >
-          Disconnect
+          Leave room
         </button>
       </div>
 
@@ -124,12 +149,18 @@ export function LiveKitConnectPanel() {
           token={tokenResponse.token}
         >
           <RoomAudioRenderer />
+          <div className="livekit-call-controls" data-testid="livekit-call-controls">
+            <ControlBar controls={{ screenShare: false, chat: false }} />
+          </div>
           <p className="livekit-room-meta">
             Joined {tokenResponse.roomName} as {tokenResponse.participantName}
           </p>
         </LiveKitRoom>
       ) : (
-        <p className="livekit-room-meta">Mock practice remains available without a room.</p>
+        <p className="livekit-room-meta">
+          Local mock practice remains available below, but it is separate from the live
+          LiveKit/xAI voice path.
+        </p>
       )}
     </section>
   );

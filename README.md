@@ -39,6 +39,13 @@ Sprint v4 adds the first server-side realtime voice worker:
 - `.env.local` loading for the worker process
 - no-network tests for agent config and worker construction helpers
 
+Sprint v5 makes the live conversation flow usable from the browser:
+
+- live conversation guidance in the room panel
+- exact room-specific worker command shown in the UI
+- built-in LiveKit mic controls after joining a room
+- clearer separation between live voice mode and local mock practice
+
 Real microphone capture, LiveKit rooms, STT, LLM calls, TTS playback, Supabase storage,
 and post-call critique generation were deferred in v1. In v2, microphone capture is local
 only; cloud providers and durable storage are still deferred. In v3, the browser can join
@@ -61,7 +68,7 @@ with the default watcher:
 WATCHPACK_POLLING=true next dev --webpack
 ```
 
-## Run The Voice Worker
+## Have A Live Conversation
 
 The realtime worker is a separate Node process from the Next.js app. Run the web app in
 one terminal:
@@ -70,17 +77,25 @@ one terminal:
 npm run dev
 ```
 
-Run the LiveKit/xAI worker in a second terminal:
+Open `http://localhost:3000`, then use the **Live conversation** panel:
 
-```bash
-npm run agent:dev
-```
+1. Keep the room as `rian-room` or choose a simple room name.
+2. Click **Join browser room**.
+3. Copy the worker command shown in the panel.
+4. Run that command in a second terminal.
+5. Use the LiveKit mic controls that appear in the panel.
+6. Speak naturally to Rian.
 
-For a focused local smoke test against a known room, use LiveKit Agents' `connect`
-command. The room name should match the room shown in the browser LiveKit panel:
+The default worker command is:
 
 ```bash
 npm run agent:connect -- --room rian-room
+```
+
+To run a general development worker that accepts LiveKit jobs:
+
+```bash
+npm run agent:dev
 ```
 
 For a production-style worker process:
@@ -162,6 +177,8 @@ exists so frontend development does not require provider calls.
   not customized yet.
 - Transcripts, audio, trace events, and post-call critique are not persisted yet.
 - Supabase storage is still planned but not wired into the live voice path.
+- The browser has live mic controls now, but there is no custom transcript timeline for
+  provider transcripts yet.
 - `npm audit` currently reports a no-fix moderate `uuid` advisory through
   `@livekit/agents`; this repo does not call the affected UUID APIs directly.
 

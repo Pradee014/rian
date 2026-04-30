@@ -306,7 +306,9 @@ h2 {
 }
 
 .livekit-error,
-.livekit-room-meta {
+.livekit-room-meta,
+.livekit-guidance,
+.worker-command-card p {
   margin: 12px 0 0;
   color: var(--muted);
   line-height: 1.5;
@@ -315,6 +317,94 @@ h2 {
 .livekit-error {
   color: var(--danger);
   font-weight: 700;
+}
+
+.live-status {
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 10px;
+  background: var(--panel-soft);
+  text-transform: uppercase;
+}
+
+.live-status-connected {
+  border-color: rgba(15, 118, 110, 0.42);
+  background: rgba(15, 118, 110, 0.1);
+  color: var(--ria);
+}
+
+.live-status-error {
+  border-color: rgba(159, 18, 57, 0.35);
+  background: rgba(159, 18, 57, 0.08);
+  color: var(--danger);
+}
+
+.livekit-steps {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: live-step;
+}
+
+.livekit-steps li {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  gap: 10px;
+  align-items: center;
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.livekit-steps li::before {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid rgba(15, 118, 110, 0.28);
+  border-radius: 50%;
+  background: rgba(15, 118, 110, 0.08);
+  color: var(--ria);
+  content: counter(live-step);
+  counter-increment: live-step;
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.worker-command-card {
+  display: grid;
+  gap: 8px;
+  margin-top: 14px;
+  border: 1px dashed rgba(51, 65, 85, 0.34);
+  border-radius: 8px;
+  padding: 14px;
+  background:
+    linear-gradient(135deg, rgba(15, 118, 110, 0.08), transparent),
+    var(--panel-soft);
+}
+
+.worker-command-card .eyebrow {
+  margin-bottom: 6px;
+}
+
+.worker-command-card code {
+  display: block;
+  overflow-x: auto;
+  border-radius: 6px;
+  background: #171716;
+  color: #fffdf6;
+  padding: 12px;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.livekit-call-controls {
+  margin-top: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel-soft);
 }
 
 .utterance-form label {
