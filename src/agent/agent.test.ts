@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import rianAgent, { createRealtimeModelOptions, createRianVoiceAgent } from "./agent";
+import rianAgent, {
+  RianPersonaAgent,
+  createRealtimeModelOptions,
+  createRianVoiceAgent,
+} from "./agent";
 import { getRianAgentConfig } from "./config";
 
 const env = {
@@ -28,6 +32,15 @@ describe("Rian LiveKit agent worker", () => {
     });
   });
 
+  it("builds Ian realtime options with Ian's configured voice", () => {
+    const config = getRianAgentConfig(env);
+
+    expect(createRealtimeModelOptions(config, "ian")).toEqual({
+      apiKey: "xai-key",
+      voice: "rex",
+    });
+  });
+
   it("passes an explicit model only when configured", () => {
     const config = getRianAgentConfig({
       ...env,
@@ -39,11 +52,20 @@ describe("Rian LiveKit agent worker", () => {
     });
   });
 
-  it("creates the rian-agent voice agent with Rian instructions", () => {
+  it("creates the Ria voice agent with Rian instructions", () => {
     const agent = createRianVoiceAgent(getRianAgentConfig(env));
 
-    expect(agent.id).toBe("rian-agent");
+    expect(agent.id).toBe("rian-agent-ria");
     expect(agent.instructions).toContain("private voice-first communication training coach");
     expect(agent.instructions).toContain("one active AI speaker");
+    expect(agent.instructions).toContain("Lead this turn as Ria");
+  });
+
+  it("creates the Ian voice agent with Ian instructions", () => {
+    const agent = createRianVoiceAgent(getRianAgentConfig(env), "ian");
+
+    expect(agent).toBeInstanceOf(RianPersonaAgent);
+    expect(agent.id).toBe("rian-agent-ian");
+    expect(agent.instructions).toContain("Lead this turn as Ian");
   });
 });

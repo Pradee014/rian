@@ -1,6 +1,15 @@
 import type { RianAgentConfig } from "./config";
+import type { PersonaId } from "@/lib/rian/types";
 
-export function buildRianAgentInstructions(config: Pick<RianAgentConfig, "riaVoice" | "ianVoice">) {
+export function buildRianAgentInstructions(
+  config: Pick<RianAgentConfig, "riaVoice" | "ianVoice">,
+  leadPersona: PersonaId = "ria",
+) {
+  const leadLine =
+    leadPersona === "ian"
+      ? "Lead this turn as Ian: calm, direct, concise, founder-minded, and willing to challenge vague wording."
+      : "Lead this turn as Ria: warm, playful, socially sharp, natural, and conversational.";
+
   return [
     "You are Rian, a private voice-first communication training coach.",
     "",
@@ -13,6 +22,7 @@ export function buildRianAgentInstructions(config: Pick<RianAgentConfig, "riaVoi
     "- Default to one active AI speaker at a time.",
     `- Ria is the warm, playful, socially sharp coach. Her configured xAI voice is ${config.riaVoice}.`,
     `- Ian is the calm, direct, founder-minded coach. His configured xAI voice is ${config.ianVoice}.`,
+    `- ${leadLine}`,
     "- In casual conversation, lead with Ria's warmth and natural flow.",
     "- In self-introduction or pitch practice, lead with Ian's clarity and structure.",
     "- If both perspectives are useful, name the handoff explicitly and keep it brief.",

@@ -53,6 +53,13 @@ Sprint v6 adds the first live debug surface:
 - any transcription streams exposed by LiveKit components
 - helper tests for agent detection, event labels, and transcript formatting
 
+Sprint v7 makes live Ria/Ian routing explicit:
+
+- Ria and Ian are separate live worker agent profiles
+- Ria uses `XAI_RIA_VOICE`; Ian uses `XAI_IAN_VOICE`
+- explicit phrases hand off the next live response to the requested persona
+- the worker still preserves one active speaker per turn
+
 Real microphone capture, LiveKit rooms, STT, LLM calls, TTS playback, Supabase storage,
 and post-call critique generation were deferred in v1. In v2, microphone capture is local
 only; cloud providers and durable storage are still deferred. In v3, the browser can join
@@ -129,6 +136,21 @@ Use it while testing:
 If you can hear Rian but do not see transcript rows, treat that as a transcript plumbing
 gap, not necessarily an audio failure.
 
+## Live Persona Routing
+
+The live worker starts as Ria by default. To route the next response, say the persona name
+clearly at the start of your turn:
+
+```text
+Ria, make this sound more natural.
+Ian, sharpen this self-introduction.
+Only Ria for this one.
+Only Ian. Be direct.
+```
+
+The worker keeps one active speaker at a time. It does not yet make Ria and Ian both
+answer the same turn, even if you ask for both.
+
 ## Checks
 
 ```bash
@@ -193,8 +215,8 @@ exists so frontend development does not require provider calls.
 
 ## Current Worker Limitations
 
-- Ria is the initial xAI voice used by the worker; dynamic Ria/Ian switching is planned
-  for the next routing sprint.
+- The live worker supports explicit Ria/Ian handoff, but it does not yet show the
+  selected persona or routing reason in the browser debug panel.
 - The worker uses LiveKit/xAI realtime behavior for turn detection; barge-in tuning is
   not customized yet.
 - Transcripts, audio, trace events, and post-call critique are not persisted yet.

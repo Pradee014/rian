@@ -60,6 +60,7 @@ describe("Rian agent instructions", () => {
 
     expect(instructions).toContain("private voice-first communication training coach");
     expect(instructions).toContain("one active AI speaker");
+    expect(instructions).toContain("Lead this turn as Ria");
     expect(instructions).toContain("not sycophantic");
     expect(instructions).toContain("Do not create romantic or sexual behavior");
     expect(instructions).toContain("Do not store or imply hidden memory");
