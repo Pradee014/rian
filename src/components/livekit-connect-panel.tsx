@@ -2,6 +2,7 @@
 
 import { ControlBar, LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react";
 import { useState } from "react";
+import { LiveConversationDebug } from "@/components/live-conversation-debug";
 import {
   getLiveConversationGuidance,
   makeAgentConnectCommand,
@@ -152,6 +153,7 @@ export function LiveKitConnectPanel() {
           <div className="livekit-call-controls" data-testid="livekit-call-controls">
             <ControlBar controls={{ screenShare: false, chat: false }} />
           </div>
+          <LiveConversationDebug />
           <p className="livekit-room-meta">
             Joined {tokenResponse.roomName} as {tokenResponse.participantName}
           </p>

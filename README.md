@@ -46,6 +46,13 @@ Sprint v5 makes the live conversation flow usable from the browser:
 - built-in LiveKit mic controls after joining a room
 - clearer separation between live voice mode and local mock practice
 
+Sprint v6 adds the first live debug surface:
+
+- participant count and `rian-agent` presence inside the connected room
+- recent LiveKit room events such as connection, participant, and audio track activity
+- any transcription streams exposed by LiveKit components
+- helper tests for agent detection, event labels, and transcript formatting
+
 Real microphone capture, LiveKit rooms, STT, LLM calls, TTS playback, Supabase storage,
 and post-call critique generation were deferred in v1. In v2, microphone capture is local
 only; cloud providers and durable storage are still deferred. In v3, the browser can join
@@ -106,6 +113,21 @@ npm run agent:start
 
 The worker loads `.env.local` first, then `.env`. Do not prefix these commands with
 secret values in the shell, because that can leak credentials into terminal history.
+
+## Use The Live Debug Panel
+
+After the browser joins the room, the panel shows **Live debug** below the mic controls.
+Use it while testing:
+
+- `Agent` should change from `waiting` to `rian-agent joined` after the worker starts.
+- `Connection` should show the browser room state.
+- `Recent events` should show joins, leaves, connection changes, and audio track
+  subscription events.
+- `Transcriptions` will show LiveKit transcription streams if the realtime provider
+  publishes them to the room.
+
+If you can hear Rian but do not see transcript rows, treat that as a transcript plumbing
+gap, not necessarily an audio failure.
 
 ## Checks
 
@@ -178,7 +200,7 @@ exists so frontend development does not require provider calls.
 - Transcripts, audio, trace events, and post-call critique are not persisted yet.
 - Supabase storage is still planned but not wired into the live voice path.
 - The browser has live mic controls now, but there is no custom transcript timeline for
-  provider transcripts yet.
+  provider transcripts beyond the debug stream view yet.
 - `npm audit` currently reports a no-fix moderate `uuid` advisory through
   `@livekit/agents`; this repo does not call the affected UUID APIs directly.
 
