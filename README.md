@@ -151,6 +151,20 @@ Only Ian. Be direct.
 The worker keeps one active speaker at a time. It does not yet make Ria and Ian both
 answer the same turn, even if you ask for both.
 
+## Worker Routing Traces
+
+When the worker starts or changes persona, it publishes a browser-visible trace on the
+LiveKit data topic `rian.trace`. In the **Live debug** panel, the **Worker routing**
+column should show:
+
+- selected persona (`Ria` or `Ian`)
+- routing reason
+- active xAI voice
+- timestamp
+
+These traces are currently ephemeral browser state. They disappear on refresh and are
+not persisted to Supabase yet.
+
 ## Checks
 
 ```bash
@@ -215,8 +229,8 @@ exists so frontend development does not require provider calls.
 
 ## Current Worker Limitations
 
-- The live worker supports explicit Ria/Ian handoff, but it does not yet show the
-  selected persona or routing reason in the browser debug panel.
+- The live worker supports explicit Ria/Ian handoff and browser-visible routing traces,
+  but those traces are not persisted yet.
 - The worker uses LiveKit/xAI realtime behavior for turn detection; barge-in tuning is
   not customized yet.
 - Transcripts, audio, trace events, and post-call critique are not persisted yet.

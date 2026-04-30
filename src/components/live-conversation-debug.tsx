@@ -1,6 +1,11 @@
 "use client";
 
-import { useParticipants, useRoomContext, useTranscriptions } from "@livekit/components-react";
+import {
+  useDataChannel,
+  useParticipants,
+  useRoomContext,
+  useTranscriptions,
+} from "@livekit/components-react";
 import { ConnectionState, RoomEvent } from "livekit-client";
 import { useEffect, useMemo, useState } from "react";
 import {
@@ -8,6 +13,11 @@ import {
   formatTranscription,
   summarizeParticipants,
 } from "@/lib/livekit/live-debug";
+import {
+  decodeWorkerTrace,
+  RIAN_TRACE_TOPIC,
+  type WorkerTraceEvent,
+} from "@/lib/livekit/worker-trace";
 
 interface LiveDebugEvent {
   id: string;
@@ -35,9 +45,20 @@ export function LiveConversationDebug() {
   const room = useRoomContext();
   const participants = useParticipants();
   const transcriptions = useTranscriptions();
+  const [workerTraces, setWorkerTraces] = useState<WorkerTraceEvent[]>([]);
   const [events, setEvents] = useState<LiveDebugEvent[]>(() => [
     makeDebugEvent("connection_state", room.state),
   ]);
+
+  useDataChannel(RIAN_TRACE_TOPIC, (message) => {
+    const trace = decodeWorkerTrace(message.payload);
+
+    if (!trace) {
+      return;
+    }
+
+    setWorkerTraces((current) => [trace, ...current].slice(0, 8));
+  });
 
   const participantSummary = useMemo(
     () =>
@@ -140,6 +161,27 @@ export function LiveConversationDebug() {
       </div>
 
       <div className="debug-columns">
+        <div>
+          <h3>Worker routing</h3>
+          {workerTraces.length > 0 ? (
+            <ol className="debug-event-list worker-trace-list">
+              {workerTraces.map((trace) => (
+                <li key={`${trace.type}-${trace.createdAt}`}>
+                  <span>{formatDebugTime(trace.createdAt)}</span>
+                  <p>
+                    <strong>{trace.personaId === "ian" ? "Ian" : "Ria"}</strong>
+                    {" selected"}
+                  </p>
+                  <p>{trace.reason}</p>
+                  <p>Voice: {trace.voice}</p>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <p className="empty-state">No worker routing trace yet.</p>
+          )}
+        </div>
+
         <div>
           <h3>Recent events</h3>
           {events.length > 0 ? (

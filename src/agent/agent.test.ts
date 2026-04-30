@@ -68,4 +68,12 @@ describe("Rian LiveKit agent worker", () => {
     expect(agent.id).toBe("rian-agent-ian");
     expect(agent.instructions).toContain("Lead this turn as Ian");
   });
+
+  it("accepts a routing trace publisher for handoff agents", () => {
+    const publishTrace = async () => {};
+    const agent = createRianVoiceAgent(getRianAgentConfig(env), "ria", publishTrace);
+
+    expect(agent).toBeInstanceOf(RianPersonaAgent);
+    expect(agent.id).toBe("rian-agent-ria");
+  });
 });

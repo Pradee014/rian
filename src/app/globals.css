@@ -426,7 +426,7 @@ h2 {
 }
 
 .debug-columns {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin-top: 14px;
 }
 
@@ -478,6 +478,17 @@ h2 {
   border-radius: 8px;
   background: white;
   padding: 10px;
+}
+
+.worker-trace-list li {
+  border-color: rgba(15, 118, 110, 0.26);
+  background:
+    linear-gradient(135deg, rgba(15, 118, 110, 0.08), transparent),
+    white;
+}
+
+.worker-trace-list strong {
+  color: var(--ria);
 }
 
 .utterance-form label {
@@ -576,7 +587,9 @@ textarea {
 @media (max-width: 900px) {
   .control-panel,
   .room-grid,
-  .persona-grid {
+  .persona-grid,
+  .live-debug-grid,
+  .debug-columns {
     grid-template-columns: 1fr;
   }
 
